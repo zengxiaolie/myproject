@@ -1,0 +1,1088 @@
+#include "MF12_LIB.h" /*头文件定义，请勿删除*/				//迷宫算法的引入
+#define  have	1
+#define  no	0
+#define  surf12	700
+#define  surf13	1400
+#define  fire1	250
+#define  fire2	330
+#define  fire3	320
+#define  fire4	300
+#define  fire12	600
+ #define  fire11	550   
+int flag=0;
+int flag_0=0;
+int flag0=0;
+int flag1=0;
+int flag4=0;
+int i=0;
+float  fv=0.0;
+float  time=0.0;
+float  time1=0.0;
+float  time4=0.0;
+int  eye=0;
+
+int DI(int i) 
+{
+	if(AI(i)<900)  return  1;
+	else return  0;
+}
+
+void run(left,right)                                             			//电机正转
+{
+	SetMoto(1,left*fv);
+	SetMoto(0,right*fv);
+}
+
+void runb(left,right)                                           			//电机反转
+{
+	SetMoto(0,-left*fv);
+	SetMoto(1,-right*fv);
+}
+
+void stop()                                                 				//停止
+{
+        run(0,0);
+}
+
+void fan()                                                   				//风扇转
+{
+        SetMoto(2,-100);
+}
+
+void fanb()                                                 				//风扇反转
+{
+	SetMoto(2,100);
+}
+
+void fanstop()                                                 				//风扇停止
+{
+        SetMoto(2,0);
+}
+
+//****************************************************************找火程序****************************************************************
+
+void gofire1()                                                				//找火
+{
+	int eye0;
+	eye0=EyeChMaxEx(EYE_0);
+	if(eye0==5)
+	{
+		if(AI_EYE(0,4)-AI_EYE(0,6)>50)
+			run(80,100);
+		else if(AI_EYE(0,6)-AI_EYE(0,4)>50)
+			run(100,80);
+		else 
+			run(100,100);
+	}      
+	  else if(eye0==4)
+	  {
+	    run(50,100);
+	  }
+	  else if(eye0==6)
+	  {
+	    run(100,50);
+	  }
+	  else if(eye0==3)
+	  {
+	    run(30,100);
+	  }
+	  else if(eye0==7)
+	  {
+	    run(100,30);
+	  }
+	  else if(eye0==2)
+	  {
+	    run(10,100);
+	  }
+	  else if(eye0==8)
+	  {
+	    run(100,15);
+	  }
+	  else if(eye0==1)
+	  {
+	    run(-30,100);
+	  }
+	  else if(eye0==9)
+	  {
+	    run(100,-1);//100 -30 
+	  }
+	  else if(eye0==0)
+	  {
+	    run(-50,100);
+	  }
+	  else run(100,-50);
+}
+
+void gofire()                                                				//找火
+{
+	int eye0;
+	eye0=EyeChMaxEx(EYE_0);
+	if(eye0==5)
+	{
+		if(AI_EYE(0,4)-AI_EYE(0,6)>50)
+			run(80,100);
+		else if(AI_EYE(0,6)-AI_EYE(0,4)>50)
+			run(100,80);
+		else 
+			run(100,100);
+	}      
+	  else if(eye0==4)
+	  {
+	    run(50,100);
+	  }
+	  else if(eye0==6)
+	  {
+	    run(100,50);
+	  }
+	  else if(eye0==3)
+	  {
+	    run(10,100);
+	  }
+	  else if(eye0==7)
+	  {
+	    run(100,10);
+	  }
+	  else if(eye0==2)
+	  {
+	    run(-10,100);
+	  }
+	  else if(eye0==8)
+	  {
+	    run(100,-10);
+	  }
+	  else if(eye0==1)
+	  {
+	    run(-50,100);
+	  }
+	  else if(eye0==9)
+	  {
+	    run(100,-50);//100 -30 
+	  }
+	  else if(eye0==0)
+	  {
+	    run(20,100);
+	  }
+	  else run(100,20);
+}
+
+void gofireb()                                                				//反向找火
+ {
+	  int eye1;
+	  eye1=EyeChMaxEx(EYE_1);
+	  if(eye1==5)
+	  {
+	    if(AI_EYE(1,4)-AI_EYE(1,6)>50)
+		runb(80,100);
+	    else if(AI_EYE(1,6)-AI_EYE(1,4)>50)
+		runb(100,80);
+	    else 
+		runb(100,100);
+	  }
+	  else if(eye1==4)
+	  {
+		runb(50,100);
+	  }
+	  else if(eye1==6)
+	  {
+	    runb(100,50);//100 50
+	  }
+	  else if(eye1==3)
+	  {
+	    runb(30,100);
+	  }
+	  else if(eye1==7)
+	  {
+	    runb(100,30);
+	  }
+	  else if(eye1==2)
+	  {
+	    runb(10,100);
+	  }
+	  else if(eye1==8)
+	  {
+	    runb(100,10);
+	  }
+	  else if(eye1==1)
+	  {
+	    runb(-50,100);
+	  }
+	  else if(eye1==9)
+	  {
+	    runb(100,-50);
+	  }
+	  else if(eye1==0)
+	  {
+	    runb(20,100);//20 100
+	  }
+	  else runb(100,20);//100 27
+}
+
+void gofire2()										//二次 正向找火
+{
+        int eye0;
+	eye0=EyeChMaxEx(EYE_0);
+        if(eye0==5)
+        {
+                stop();
+        }
+        else if(eye0==4)
+	{
+		run(-25,25);
+	}
+	else if(eye0==6)
+	{
+		run(25,-25);
+	}
+	else if(eye0==3)
+	{
+		run(-35,35);
+	}
+	else if(eye0==7)
+	{
+		run(35,-35);
+	}
+	else if(eye0==2)
+	{
+		run(-45,45);
+	}
+	else if(eye0==8)
+	{
+		run(65,-55);//65 -55
+	}
+	else if(eye0==1)
+	{
+		run(-55,55);
+	}
+	else if(eye0==9)
+	{
+		run(55,-55);//70 -60
+	}
+	else if(eye0==0)
+	{
+		run(-60,60);
+	}
+	else 
+        {
+		run(60,-60);
+        }
+}
+
+void gofireb2()                                                				//二次 反向找火
+{ 
+	int eye1;
+	eye1=EyeChMaxEx(EYE_1);
+	if(eye1==5)
+	{
+		stop();
+	}
+	else if(eye1==4)
+	{
+		runb(-25,25);
+	}
+	else if(eye1==6)
+	{
+		runb(25,-25);
+	}
+	else if(eye1==3)
+	{
+		runb(-35,35);
+	}
+	else if(eye1==7)
+	{
+		runb(35,-35);
+	}
+	else if(eye1==2)
+	{
+		runb(-45,45);
+	}
+	else if(eye1==8)
+	{
+		runb(45,-45);
+	}
+	else if(eye1==1)
+	{
+		runb(-55,55);
+	}
+	else if(eye1==9)
+	{
+		runb(55,-55);
+	}
+	else if(eye1==0)
+	{
+		runb(-60,60);//-60 60
+	}
+	else 
+        {
+		runb(60,-60);
+        }
+}
+
+//****************************************************************沿墙走****************************************************************
+
+void mg_left(int pwm_1,int pwm_2)					//沿左墙
+{
+        if(DI(3)==have)
+	{
+		run(68,40);
+	}      
+	else  if(DI(2)==have && DI(11)==have)
+        {
+                run(70,70);//65 68
+	}               
+	else if(DI(2)==have)
+	{
+                run(68,50);
+	}
+	else 
+        {
+		run(pwm_1,pwm_2);
+        }
+}
+
+void mg_leftb(int pwm_1,int pwm_2)					//反沿左墙
+{
+        if(DI(8)==have)
+	{
+		runb(65,35);
+	}
+	else  if(DI(7)==have && DI(6)==have)
+        {
+                runb(70,70);
+	}                  
+	else if(DI(7)==have)
+	{
+                runb(65,45);
+	}
+	else 
+        {
+		runb(pwm_1,pwm_2);
+        }
+}
+
+void mg_right(int pwm_1,int pwm_2)					//沿右墙
+{
+		 if(DI(5)==have)
+		{
+                        run(33,70);    //45  65, 33 70
+		}
+                else  if(DI(6)==have && DI(7)==have)
+                {
+                        run(70,70);
+		}              
+                else if(DI(6)==have)
+		{
+                        run(50,70);    //55 65
+		}                      
+                else
+		{
+                        run(pwm_1,pwm_2);
+		}
+}
+
+void mg_rightb(int pwm_1,int pwm_2)					//反沿右墙
+{
+              
+		if(DI(10)==have)
+		{
+                        runb(35,75);//65
+		}
+                else if(DI(11)==have && DI(2)==have)
+                {
+                        runb(70,70);//78 78
+		}
+                else if(DI(11)==have)
+		{
+                        runb(50,75);
+		}
+                else
+		{
+                        runb(pwm_1,pwm_2);
+		}
+}
+
+//****************************************************************回家子程序****************************************************************
+
+void mg_leftb_1(int pwm_1,int pwm_2)					 //反沿左墙
+{
+        if(DI(9)==have)
+        {
+                runb(40,-45);
+	}
+	else if(DI(8)==have)
+	{
+		runb(40,10);
+	}                   
+	else if(DI(7)==have)
+	{
+                runb(40,20);
+	}
+	else 
+        {
+		runb(pwm_1,pwm_2);
+        }
+}
+
+void mg_left_1(int pwm_1,int pwm_2)					//沿左墙
+{	
+        if(DI(4)==have)
+	{
+                run(40,-45);
+	}
+	else if(DI(3)==have)
+	{
+		run(40,10);
+	}                   
+	else if(DI(2)==have)
+	{
+                run(40,20);
+	}
+	else 
+        {
+		run(pwm_1,pwm_2);
+        }
+}
+
+void mg_rightb_1(int pwm_1,int pwm_2)				//反沿右墙
+{
+		if(DI(9)==have)
+                {
+			runb(-50,45);
+		}
+		else if(DI(10)==have)
+		{
+                        runb(10,40);
+		}
+                else if(DI(11)==have)
+		{
+                        runb(20,40);
+		}
+                else
+		{
+                        runb(pwm_1,pwm_2);
+		}
+}
+
+void mg_right_1(int pwm_1,int pwm_2)					//沿右墙
+{
+		if(DI(4)==have)
+                {
+			run(-20,60);//-45 40  -20 60
+		}
+		else if(DI(5)==have)
+		{
+                        run(10,60);//10  40
+		}
+                else if(DI(6)==have)
+		{
+                        run(10,60);//20 40回家有问题改这里
+		}
+                else
+		{
+                        run(pwm_1,pwm_2);//65 10
+		}
+}
+//****************************************************************回家子程序****************************************************************
+
+void home3()
+{
+        fv=0.8;
+        while(AI_MAX(12)<surf12)
+        {
+                mg_rightb_1(40,15);
+	}
+        //stop();wait(10000);
+        float t3=seconds();
+        while(seconds()-t3<0.38)
+        {
+                mg_rightb_1(40,5);
+	}
+        //stop();wait(10000);
+        while(AI_MAX(13)<surf13-200)
+        {
+                mg_leftb_1(10,40);
+	}
+        stop();wait(10000);
+}
+
+void home2()
+{
+        fv=0.8;
+        while(AI_MAX(12)<surf12)
+        {
+                mg_right_1(60,25);//55 8
+	}
+        //stop();wait(10000);
+         while(DI(1)==no)
+        {
+                 mg_left_1(10,65);
+	 }
+         //stop();wait(10000);
+        float t2=seconds();
+        while(seconds()-t2<1.6)
+        {
+                mg_left_1(15,55);
+	}
+        //stop();wait(10000);
+        for(i=40;i>0;i--)
+        {
+                run(i,i);
+                wait(0.003);
+        }
+        for(i=0;i<40;i++)
+        {
+                runb(i,i);
+                wait(0.003);
+        }
+        while(AI_MAX(13)<surf13 && DI(1)==no)
+        {
+                mg_leftb_1(13,55);
+	}
+         for(i=40;i>0;i--)
+        {
+                runb(i,i);
+                wait(0.003);
+        }
+         stop();wait(10000);
+ }
+
+
+void home1()															//1号房间回家
+{
+        fv=0.8;
+	while(AI_MAX(13)<surf13)
+	{
+		mg_rightb_1(45,25);
+	}
+	while(DI(0)==no)
+	{
+		mg_rightb_1(40,12);
+	}
+        //stop();
+	while(AI_MAX(13)<surf13+100)
+	{
+		mg_rightb_1(50,10);
+	}
+        stop();
+ }
+/*void home4()															//4号房间回家
+{
+        fv=0.8;
+        while(AI_MAX(12)<surf12)
+        {
+                mg_right_1(40,20);
+	}
+      
+        while(DI(6)==no)
+        {
+                fv=1;
+                run(5,60);
+        }
+        float t3=seconds();
+        while(seconds()-t3<2.4)
+        {
+               mg_left(20,50); 
+	}
+        while(AI_MAX(12)<surf12)
+        {
+                fv=0.4;
+                mg_right(70,20);
+                if(DI(4)==have)
+                {
+                        run(50,-50);
+                }
+        }
+        stop();
+ }
+*/
+void home4()
+{
+        fv=0.8;
+        while(AI_MAX(13)<surf13)
+        {
+                mg_right_1(45,20);
+	}
+        while(DI(11)==no)
+        {
+                run(52,12);
+	}
+        //stop();wait(10000);
+        for(i=40;i>0;i--)
+        {
+                run(i,i);
+                wait(0.003);
+        }
+        while(AI_MAX(12)<surf12)
+        {
+                mg_rightb_1(65,10);
+	}
+                 stop();wait(10000);
+ }
+//****************************************************************灭火子程序****************************************************************
+
+void mie3()                                               									//灭3火
+{
+       
+	beep(1);
+	while(EyeInMaxEx(EYE_0) < 510) //550
+	{
+		fv=0.75;
+		gofire();
+	}
+        if(EyeInMaxEx(EYE_0) >600)//570
+        {
+                while(EyeInMaxEx(EYE_0) < 710)										//找准位置灭火
+		{
+			fv=1.2;
+                        gofire2();
+			fanb();                 
+			if(EyeInMaxEx(EYE_0) < 400)                     // 370
+				break;	
+        	}      
+        }
+        else
+        {   
+		while(EyeInMaxEx(EYE_0) < 670)										//找准位置灭火
+		{
+			fv=0.4;
+			gofire(); 
+			fanb();
+			if(EyeInMaxEx(EYE_0) < 400)break;          //380
+		}
+        }
+        if(EyeInMaxEx(EYE_0)>300)                         								//判断火是否复燃
+	{
+                while(EyeChMaxEx(EYE_0)!=5 && EyeChMaxEx(EYE_0)!=4 && EyeChMaxEx(EYE_0)!=6)
+		{
+                        fv=1.2;
+                        gofire2();
+                         if(EyeInMaxEx(EYE_0)<200)                      //250
+				break;
+                }      						              
+         }
+          
+        run(0,0);
+        wait(0.5);
+        fanstop();
+        Printf("time3=%f\n",seconds()-time);
+        wait(0.5);
+        beep(0);
+        if(EyeInMaxEx(EYE_0)>fire3-50)                         							//判断火是否复燃
+	{
+                while(EyeChMaxEx(EYE_0)!=5 && EyeChMaxEx(EYE_0)!=4 && EyeChMaxEx(EYE_0)!=6)
+		{
+                        fv=1.2;
+                        gofire2();
+                }
+                run(0,0);
+                beep(1);
+		fanb();
+		wait(2);
+		fanstop();
+                beep(0);							              
+         } 
+         wait(0.5);
+         if(EyeInMaxEx(EYE_0)>fire3-100)                         							//判断火是否复燃
+	 {
+                while(EyeChMaxEx(EYE_0)!=5 && EyeChMaxEx(EYE_0)!=4 && EyeChMaxEx(EYE_0)!=6)
+		{
+                        fv=1.2;
+                        gofire2();
+                }
+                run(0,0);
+                beep(1);
+		fanb();
+		wait(2);
+		fanstop();
+                beep(0);							              
+         }
+        home3();
+         stop();
+}
+
+void mie2()                                               									//灭2火
+{
+        beep(1);
+ 	while(EyeInMaxEx(EYE_1) < 520)
+	{
+		fv=0.75;
+		gofireb();
+	}
+	while(EyeInMaxEx(EYE_1) < 600)					  //640					//找准位置灭火
+	{
+		fv=0.4;
+		gofireb(); 
+                fan();
+                if(EyeInMaxEx(EYE_1) < 400)break;
+	}
+        if(EyeInMaxEx(EYE_1)>300)                         								//判断火是否复燃
+	{
+                while(EyeChMaxEx(EYE_1)!=5 && EyeChMaxEx(EYE_1)!=4 && EyeChMaxEx(EYE_1)!=6)
+		{
+                        fv=1.2;
+                        gofireb2();
+                         if(EyeInMaxEx(EYE_1)<220)
+				break;
+                }      						              
+         } 
+        run(0,0);
+        wait(0.5);
+        Printf("time2=%f\n",seconds()-time);
+	fanstop();
+        wait(0.5);
+        beep(0);
+         if(EyeInMaxEx(EYE_1)>fire2-50)                         							//判断火是否复燃
+	{
+                while(EyeChMaxEx(EYE_1)!=5 && EyeChMaxEx(EYE_1)!=4 && EyeChMaxEx(EYE_1)!=6)
+		{
+                        fv=1.2;
+                        gofireb2();
+                }
+                run(0,0);
+                beep(1);
+		fan();
+		wait(2);
+		fanstop();	
+                beep(0);						              
+         } 
+         wait(0.5);
+         if(EyeInMaxEx(EYE_1)>fire2-50)                         							//判断火是否复燃
+	{
+                while(EyeChMaxEx(EYE_1)!=5 && EyeChMaxEx(EYE_1)!=4 && EyeChMaxEx(EYE_1)!=6)
+		{
+                        fv=1.2;
+                        gofireb2();
+                }
+                run(0,0);
+                beep(1);
+		fan();
+		wait(2);
+		fanstop();	
+                beep(0);						              
+         }
+         home2();
+         stop();
+}
+
+void mie1()                                               									//灭1火
+{
+        beep(1);
+        while(EyeInMaxEx(EYE_0) < 500)
+	{
+		fv=0.75;
+		gofire();
+	}
+	while(EyeInMaxEx(EYE_0) < 620)        //650										//找准位置灭火
+	{
+		fv=0.4;
+		gofire();
+                fanb();
+                if(EyeInMaxEx(EYE_0)<400)break;
+	}
+        if(EyeInMaxEx(EYE_1)>300)                         								//判断火是否复燃
+	{
+                while(EyeChMaxEx(EYE_0)!=5 && EyeChMaxEx(EYE_0)!=4 && EyeChMaxEx(EYE_0)!=6)
+		{
+                        fv=1.2;
+                        gofire2();
+                         if(EyeInMaxEx(EYE_0)<200)
+				break;
+                }
+                
+       						              
+         } 
+        run(0,0);
+        wait(0.5);
+        Printf("time1=%f\n",seconds()-time);
+	fanstop();
+        beep(0);
+        wait(0.5);
+         if(EyeInMaxEx(EYE_0)>fire1-50)                         							//判断火是否复燃
+	{
+                while(EyeChMaxEx(EYE_0)!=5 && EyeChMaxEx(EYE_0)!=4 && EyeChMaxEx(EYE_0)!=6)
+		{
+                        fv=1.2;
+                        gofire2();
+                }
+                run(0,0);
+                beep(1);
+		fanb();
+		wait(2);
+		fanstop();
+                beep(0);						              
+         } 
+         wait(0.5);
+	 if(EyeInMaxEx(EYE_0)>fire1-50)                         							//判断火是否复燃
+	 {
+                while(EyeChMaxEx(EYE_0)!=5 && EyeChMaxEx(EYE_0)!=4 && EyeChMaxEx(EYE_0)!=6)
+		{
+                        fv=1.2;
+                        gofire2();
+                }
+                run(0,0);
+                beep(1);
+		fanb();
+		wait(2);
+		fanstop();
+                beep(0);						              
+         }
+         home1();
+         stop();
+}
+
+void mie4()                                               									//灭4火
+{
+        beep(1);
+	while(EyeInMaxEx(EYE_1) < 660)										//找准位置灭火
+	{
+		fv=0.35;
+		gofireb();
+                fan();
+                if(EyeInMaxEx(EYE_1)<400)                             //  380
+                break;
+	}
+        
+        if(EyeInMaxEx(EYE_1)>250)                         								//判断火是否复燃
+	{
+                while(EyeChMaxEx(EYE_1)!=5 && EyeChMaxEx(EYE_1)!=4 && EyeChMaxEx(EYE_1)!=6)
+		{
+                        fv=1.2;
+                        gofireb2();
+                         if(EyeInMaxEx(EYE_1)<150)            //250
+				break;
+                }
+                
+       						              
+         } 
+        
+        run(0,0);
+        wait(0.5);
+        fanstop();
+        Printf("time4=%f\n",seconds()-time);
+        wait(0.5);
+        beep(0);
+        if(EyeInMaxEx(EYE_1)>fire4)                         								//判断火是否复燃
+	{
+                while(EyeChMaxEx(EYE_1)!=5 && EyeChMaxEx(EYE_1)!=4 && EyeChMaxEx(EYE_1)!=6)
+		{
+                        fv=1.2;
+                        gofireb2();
+                }
+                run(0,0);
+                beep(1);
+		fan();
+		wait(2);
+		fanstop();
+                beep(0);							              
+         } 
+         wait(0.5);
+         if(EyeInMaxEx(EYE_1)>fire4)                         								//判断火是否复燃
+	{
+                while(EyeChMaxEx(EYE_1)!=5 && EyeChMaxEx(EYE_1)!=4 && EyeChMaxEx(EYE_1)!=6)
+		{
+                        fv=1.2;
+                        gofireb2();
+                }
+                run(0,0);
+                beep(1);
+		fan();
+		wait(2);
+		fanstop();
+                beep(0);							              
+         } 
+         home4();
+         stop();
+}
+
+
+//****************************************************************用户主函数****************************************************************
+
+void main()
+{
+
+	int i=0,j=0;	
+	InitARMRobot();								//初始化机器人
+	SetMoto_PowerConfig(0.96);//0.95
+	AI_MAX_AVGSET(1);
+	AI_MAX(12);
+        AI_MAX(13);
+	void inout1_0();
+        void inout1_1();
+         
+       
+	while(microphone()<100)                        		 	//声音启动  条件大于100分贝
+	{
+                printf("wait microphone...");
+	}
+      resettime();     
+	fv=1.2;								      	 	//电机的一个乘积因素
+        time=seconds();
+        
+        for(i=3;i<55;i++)
+         {
+                 run(i+1,i);
+                 wait(0.005);
+         }
+        //stop();wait(10000);
+         while(AI_MAX(12)<surf12&&DI(0)==no)
+         {
+                mg_right(72,20);
+         }
+         //stop();wait(10000);
+         for(i=50;i>24;i--)
+         {
+                 run(i,i+5);
+                 wait(0.002);
+         }
+         //stop();wait(10000);
+         while(EyeInMaxEx(EYE_0) >fire3)//450
+         {
+                 mie3();
+               
+         }
+        for(i=24;i>0;i--)
+         {
+                 run(i,i+1);
+                 wait(0.003);
+         }
+       // stop();wait(10000);
+         while(EyeInMaxEx(EYE_0) >fire3)//450
+         {
+                 mie3();
+           
+         }
+         //stop();wait(10000);
+         
+          for(i=0;i<50;i++)
+         {
+                 runb(i-1,i);
+                 wait(0.004);
+         }
+         //stop();wait(10000);
+         
+	while(DI(0)==no)//拐一
+        {
+		runb(-15,95);//15,72     12,85
+        }
+        //stop();wait(10000);
+        fv=1.1;//改变系数
+        //***************************************************2**************************************************
+        while(AI_MAX(13)<1000&&DI(1)==no)
+        {
+                mg_rightb(69,22);//75 16
+        }
+        //stop();wait(10000);
+         
+             for(i=50;i>15;i--)
+         {
+                 runb(i-4,i);//(i-4,i+3)
+                 wait(0.003);
+         }
+     if(EyeInMaxEx(EYE_1)>fire2)
+          {
+                  mie2();
+                  
+           }
+           //stop();wait(100000);
+          
+         for(i=15;i>0;i--)
+         {
+                 runb(i,i);//(i,i+5)
+                 wait(0.002);
+         }
+                 if(EyeInMaxEx(EYE_1)>fire2)
+          {
+                  mie2();
+                  
+           }
+        //stop();wait(100000);
+         for(i=0;i<50;i++)
+         {
+                 run(i-3,i-1);
+                 wait(0.005);
+         } 
+         //stop();wait(100000);
+         while(DI(1)==no)//
+        {
+		run(8,86);//15,72     12,85
+        }
+        //stop();wait(100000);
+        
+        while(AI_MAX(12)<surf12&&DI(0)==no)//......3
+        {
+                mg_right(70,20);//75 27
+        }
+         //stop();wait(100000);
+        for(i=50;i>10;i--)
+         {
+                 run(i,i+2);
+                 wait(0.003);
+         }
+         if(EyeInMaxEx(EYE_0)>fire1)
+         {
+                 mie1();
+                 
+         }
+         for(i=10;i>0;i--)
+         {
+                 run(i,i+2);
+                 wait(0.003);
+         }
+         if(EyeInMaxEx(EYE_0)>fire1)
+         {
+                 mie1();
+              
+         }
+         //stop();wait(100000);
+         for(i=0;i<50;i++)
+         {
+                 runb(i-2,i-5);
+                 wait(0.005);
+         } 
+          //stop();wait(100000); 
+         while(DI(0)==no)
+        {
+                runb(85,10);
+        }
+       //stop();wait(100000); 
+        while(DI(6)==no)
+        {
+                runb(75,20);//65
+        }
+	//stop();wait(100000); 
+        while(DI(10)==no&&DI(11)==no)
+        {
+                runb(70,23);//60
+        }
+         //stop();wait(100000); 
+         
+          while(DI(1)==no&&AI_MAX(13)<surf13)                                      //走到白线
+        {
+                
+		mg_leftb(13,75); //5 65                
+                
+        }   
+         //stop();wait(100000);  
+             for(i=50;i>15;i--)
+         {
+                 runb(i+2,i);
+                 wait(0.003);
+                 
+         }
+         if(EyeInMaxEx(EYE_1)>fire4)
+         {
+                 mie4();
+              
+         }
+           for(i=15;i>0;i--)
+         {
+                 runb(i,i);
+                 wait(0.001);
+                 
+         }
+         if(EyeInMaxEx(EYE_1)>fire4)
+         {
+                 mie4();
+             
+         }
+       stop();wait(100000);         
+}
