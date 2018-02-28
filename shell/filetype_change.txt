@@ -1,0 +1,39 @@
+#!/bin/bash
+#filename:filetype_change
+mkdir -p /man1/gzip                                          //创建/man1/gzip，-p表示父目录不在时,则自动创建，如果目录存在，不报错
+cp /usr/share/man/man1/*  /man1/gzip                         //拷贝所有.gz压缩文件复制到/man1/gzip中
+ls /usr/share/man/man1 > man1_gz_list                        //把man1目录的文件列表保存
+
+
+##################对.gz文件解压缩##################
+
+while read LINE1
+//该结构每循环一次从man_gz_list文件读入一个文件名，并依次对其进行解压操作，其中“read LINE1”是控制
+//条件，即表示每循环一次从指定文件读入一行数据，且保存到变量LINE1中。读入文件由“done < man1_gz_list”
+//指定，该代码表示将man1_gz_list文件的内容输入给while循环
+
+do
+  GZFILE=$LINE1
+  gunzip /man1/gzip/$GZFILE                                   //解压缩
+  done < man1_gz_list                                         //"<man1_gz_list"表示while结构从文件man1_gz_list读入数据
+
+##################文件类型转换#####################
+ls /man1/gzip > man1_list                                     //将/man1/gzip目录下文件列表信息保存到文件man1_list
+
+mkdir /man1/html  
+
+while read LINE2
+//man1_list文件中读入一个文件名，并依次对其进行类型转换。其中“read LINE2”是控制条件，
+//即表示每循环一次从制定文件读入一行数据，且保存到变量LINE2中。读入的文件由“done < man1_list”指定
+//改代码表示将man1_list文件的内容输入给while循环
+
+do
+  FILE=$FINE2
+  man2html $FILE > /man1/html/$FILE.html                     //使用man2html命令将man类型文件转换为html文件，并保存到目录/man1/html中
+  done < man1_list                                           //其中“done”匹配while结构，表示循环结束，“man1_list”表示while结构从文件man1_list读入数据
+
+
+#################复制########################
+mkdir -p /var/www/man1                                       //创建/man1/gzip，-p表示父目录不在时,则自动创建，如果目录存在，不报错
+cp -rf /man1/html  /var/www/man/man1                         //“-r”复制子目录 ,“-f”强制复制
+
